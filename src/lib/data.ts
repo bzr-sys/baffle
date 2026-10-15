@@ -6,7 +6,7 @@ import {
   type Doc,
   type NewPermission,
 } from '@bzr/bazaar'
-import { appId, bzr } from '@/bazaar'
+import { appId, bzr, sellerOrgId } from '@/bazaar'
 import { levelLabel } from '@/games'
 import type { GameDoc, GameId, Level, PackDoc, PackLevel, Solve } from '@/types'
 
@@ -126,8 +126,8 @@ async function upsert<T extends Doc>(ctx: BazaarContext, collectionName: string,
 }
 
 /**
- * Publish the pack: the product, sold by the publishing admin, and the chosen games'
- * pack levels. Safe to run again: it updates what exists.
+ * Publish the pack: the product, sold by `sellerOrgId` or else the publishing admin, and
+ * the chosen games' pack levels. Safe to run again: it updates what exists.
  */
 export async function publish(
   files: Partial<Record<GameId, Level[]>>,
@@ -139,16 +139,19 @@ export async function publish(
   await prepare(ctx, PACK)
   let pack = await ctx.collection<PackDoc>(PACK).getOne('pack')
   if (pack == null) {
-    // Sold by the admin who publishes, as themselves (the SDK can't sell as an org yet)
-    const product = await bzr.monetization.products.create({
-      name: 'Baffle pack',
-      description: 'Every puzzle in every Baffle game. Yours to keep.',
-      costInCents: PACK_PRICE_CENTS,
-      repeatInterval: ProductRepeatInterval.NEVER,
-      group: PACK_GROUP,
-    })
+    const product = await bzr.monetization.products.create(
+      {
+        name: 'Baffle pack',
+        description: 'Every puzzle in every Baffle game. Yours to keep.',
+        costInCents: PACK_PRICE_CENTS,
+        repeatInterval: ProductRepeatInterval.NEVER,
+        group: PACK_GROUP,
+      },
+      { sellerId: sellerOrgId },
+    )
     log(`Created the pack product (${product.id})`)
     pack = { id: 'pack', productId: product.id, priceCents: product.costInCents }
+    if (sellerOrgId) pack.sellerId = sellerOrgId
   }
   await upsert<PackDoc>(ctx, PACK, [pack])
 

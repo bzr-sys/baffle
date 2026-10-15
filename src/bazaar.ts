@@ -2,6 +2,9 @@ import { BazaarApp, type BazaarOptions } from '@bzr/bazaar'
 
 export const appId: string = import.meta.env.VITE_APP_ID || 'baffle'
 
+/** Org that sells the pack (an org the admin administers); unset: the admin sells it */
+export const sellerOrgId: string | undefined = import.meta.env.VITE_SELLER_ID || undefined
+
 const config: BazaarOptions = {
   appId,
   // Must match a redirect URI registered for the app, with no trailing slash

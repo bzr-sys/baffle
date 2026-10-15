@@ -36,7 +36,8 @@ export type PackLevel = Level & { id: string; products: string[] }
 export type GameDoc = { id: GameId; packCount: number; labels: string[] }
 
 /** The pack product. Everyone can read it. */
-export type PackDoc = { id: 'pack'; productId: string; priceCents: number }
+/** The pack product. `sellerId`: the org selling it, if not the publishing admin */
+export type PackDoc = { id: 'pack'; productId: string; priceCents: number; sellerId?: string }
 
 /** A finished puzzle, in the player's own DB */
 export type Solve = {

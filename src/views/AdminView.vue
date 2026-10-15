@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { bzr } from '@/bazaar'
+import { bzr, sellerOrgId } from '@/bazaar'
 import AppHeader from '@/components/AppHeader.vue'
 import { GAMES } from '@/games'
 import { PACK_GROUP, parseLevels, publish } from '@/lib/data'
@@ -17,8 +17,12 @@ const busy = ref(false)
 const ready = computed(() => status.value?.canMonetize && status.value.paymentsEnabled)
 
 async function refresh() {
-  status.value = await bzr.monetization.status()
-  if (games.pack) sales.value = (await bzr.monetization.sales.list({ group: PACK_GROUP })).length
+  // The pack's seller once published, else the one the next publish will use
+  const sellerId = games.pack ? games.pack.sellerId : sellerOrgId
+  status.value = await bzr.monetization.status({ sellerId })
+  if (games.pack) {
+    sales.value = (await bzr.monetization.sales.list({ group: PACK_GROUP, sellerId })).length
+  }
 }
 onMounted(refresh)
 

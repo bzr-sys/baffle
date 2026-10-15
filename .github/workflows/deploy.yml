@@ -16,6 +16,8 @@ jobs:
         env:
           # The app's ID from the Bazaar dashboard (repository variable)
           VITE_APP_ID: ${{ vars.BAFFLE_APP_ID }}
+          # Org that sells the pack (empty: the publishing admin)
+          VITE_SELLER_ID: ${{ vars.BAFFLE_SELLER_ID }}
           BASE_PATH: /${{ github.event.repository.name }}/
         run: |
           npm ci

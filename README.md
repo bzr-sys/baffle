@@ -27,7 +27,7 @@ There is no backend. Free puzzles and the daily schedule are part of the static 
 | `solves` | Player's DB | Only the player |
 
 - `bzr.appContext()` opens the app DB. Players can only read it; Bazaar refuses any grant that would let them write.
-- The pack is a one-time product the admin creates as themselves (`bzr.monetization`), so **the publishing admin is the seller** and gets paid. Admin finds the pack again through its product ID in the `pack` doc. Org-owned apps can't sell as the org yet (no SDK support). Their plan (Creator, or Business for org-owned apps) must allow monetization; app DB storage counts against the plan's app storage pool.
+- The pack is a one-time product created on first publish (`bzr.monetization.products.create`). The seller gets paid: the org in `VITE_SELLER_ID` (an org the admin administers), else the publishing admin. Admin finds the pack again through the product ID and seller in the `pack` doc. The seller's plan (Creator, or Business for an org) must allow monetization; app DB storage counts against the app owner's app storage pool.
 - Buying the pack changes nothing in Baffle's data: the `$purchases` filter makes the pack levels readable.
 
 The Bazaar setup is in `src/bazaar.ts`, data and publishing in `src/lib/data.ts`, the game list in `src/games.ts`.
@@ -63,6 +63,6 @@ Other ports: `-p 3390 -u http://localhost:5190` on the mock, `VITE_BAZAAR_URI=ht
 
 ## Deploy
 
-GitHub Pages via `.github/workflows/deploy.yml`. Set the repository variable `BAFFLE_APP_ID` and register `https://<owner>.github.io/<repo>` as a redirect URI. Switch `@bzr/bazaar` to the published version once it includes `appContext()`; CI can't reach the sibling checkout.
+GitHub Pages via `.github/workflows/deploy.yml`. Set the repository variables `BAFFLE_APP_ID` and `BAFFLE_SELLER_ID` (org ID, optional) and register `https://<owner>.github.io/<repo>` as a redirect URI.
 
 Game names were checked against app stores and the web (not a formal trademark search). Run a USPTO/EUIPO check before launch.
