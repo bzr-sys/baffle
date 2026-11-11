@@ -63,6 +63,6 @@ Other ports: `-p 3390 -u http://localhost:5190` on the mock, `VITE_BAZAAR_URI=ht
 
 ## Deploy
 
-GitHub Pages via `.github/workflows/deploy.yml`. Set the repository variables `BAFFLE_APP_ID` and `BAFFLE_SELLER_ID` (org ID, optional) and register `https://<owner>.github.io/<repo>` as a redirect URI.
+GitHub Pages via `.github/workflows/deploy.yml`. Set the repository variables `BAFFLE_APP_ID` and `BAFFLE_SELLER_ID` (org ID, optional) and register `https://baffle.bzr.dev` as the app URL and redirect URI. The repository's Pages custom domain is `baffle.bzr.dev`.
 
 Game names were checked against app stores and the web (not a formal trademark search). Run a USPTO/EUIPO check before launch.
